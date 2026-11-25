@@ -1,0 +1,6 @@
+{
+  "$schema": "https://gooddeploy.de/schema/v1.json",
+  "checks": {
+    "health": { "path": "/api/health" }
+  }
+}
