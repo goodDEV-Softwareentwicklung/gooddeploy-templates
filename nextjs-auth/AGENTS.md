@@ -65,7 +65,17 @@ Datei; rate keine Befehle. Das Handbuch steht unter https://docs.gooddeploy.eu/.
 
 ## Ablauf auf gooddeploy
 
-Vor dem ersten Deploy (die Nutzerin im Terminal):
+Eine neue App aus dieser Vorlage entsteht am einfachsten mit einem Befehl (die Nutzerin im Terminal):
+
+```sh
+gooddeploy login
+gooddeploy init nextjs-auth meine-app               # Ordner, Git-Repo, Projekt mit Postgres, BETTER_AUTH_SECRET
+cd meine-app
+```
+
+Ist die App so entstanden, ist alles eingerichtet; weiter mit `gooddeploy deploy`. Prüfen lässt
+sich das mit `gooddeploy status` und `gooddeploy db info`. Wurde die Vorlage anders geholt
+(Archiv, GitHub), vor dem ersten Deploy:
 
 ```sh
 gooddeploy login
