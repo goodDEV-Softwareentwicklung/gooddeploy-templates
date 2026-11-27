@@ -1,0 +1,43 @@
+.cta {
+  max-width: 720px;
+  margin-inline: auto;
+  text-align: center;
+  --_btn-row-justify: center;
+}
+
+/* in Spalten als Kasten; Textfarbe und Kontext setzt tone-* (ui/tones.ts) */
+.box {
+  padding: 36px 28px;
+  border-radius: var(--radius);
+  --_btn-row-space: 24px;
+}
+
+/* Ton surface als eigenständiger Abschnitt: abgesetzte Box im Container
+   statt vollbreitem Band (hebt sich sonst kaum vom Seitenhintergrund ab) */
+.standalone {
+  padding: 56px 32px;
+  box-shadow: var(--panel-shadow, none);
+}
+
+.standalone .cta {
+  --_btn-row-space: 28px;
+}
+
+.primary {
+  background: var(--primary);
+}
+
+.dark {
+  background: var(--dark);
+}
+
+.surface {
+  background: var(--_tile-bg, var(--surface));
+  border: var(--panel-border, 1px solid var(--line));
+}
+
+@media (max-width: 860px) {
+  .standalone {
+    padding: 40px 20px;
+  }
+}

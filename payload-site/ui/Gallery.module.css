@@ -1,0 +1,33 @@
+/* Bilderraster. Theme-Tokens: --gallery-image-border, --gallery-tilt. */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.image {
+  aspect-ratio: 1;
+  height: auto;
+  border-radius: var(--radius);
+  border: var(--gallery-image-border, none);
+}
+
+.image:nth-child(odd) {
+  transform: rotate(calc(var(--gallery-tilt, 0deg) * -1));
+}
+
+.image:nth-child(even) {
+  transform: rotate(var(--gallery-tilt, 0deg));
+}
+
+@media (max-width: 760px) {
+  .gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@container (max-width: 640px) {
+  .gallery {
+    grid-template-columns: 1fr 1fr;
+  }
+}

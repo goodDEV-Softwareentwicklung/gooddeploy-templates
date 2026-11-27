@@ -17,6 +17,7 @@ export function AuthForm({
   const [pending, setPending] = useState(false);
   return (
     <form
+      className="card stack"
       onSubmit={async (e) => {
         e.preventDefault();
         setPending(true);

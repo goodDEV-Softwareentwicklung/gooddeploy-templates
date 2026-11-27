@@ -1,0 +1,211 @@
+.header {
+  /* Höhe des Kopfs, gemessen in Header.tsx; das mobile Menü beginnt darunter */
+  --_header-height: 72px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 14px 24px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.link {
+  padding: 8px 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--muted);
+  border-radius: var(--btn-radius, var(--radius));
+}
+
+.link:hover,
+.link[aria-current="page"] {
+  color: var(--ink);
+}
+
+.link[aria-current="page"] {
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+
+.action {
+  margin-left: 10px;
+}
+
+.action + .action {
+  margin-left: 4px;
+}
+
+.menu {
+  display: none;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  padding: 10px;
+  margin-right: -6px;
+  cursor: pointer;
+  border-radius: var(--btn-radius, var(--radius));
+}
+
+/* Hamburger aus drei Linien, wird beim Öffnen zum X */
+.bars {
+  position: relative;
+  display: block;
+  width: 24px;
+  height: 18px;
+}
+
+.bars > span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 0.3s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 0.2s ease,
+    top 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.bars > span:nth-child(1) {
+  top: 0;
+}
+
+.bars > span:nth-child(2) {
+  top: 8px;
+}
+
+.bars > span:nth-child(3) {
+  top: 16px;
+}
+
+.menu[aria-expanded="true"] .bars > span:nth-child(1) {
+  top: 8px;
+  transform: rotate(45deg);
+}
+
+.menu[aria-expanded="true"] .bars > span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0.2);
+}
+
+.menu[aria-expanded="true"] .bars > span:nth-child(3) {
+  top: 8px;
+  transform: rotate(-45deg);
+}
+
+/* Mobil: Menü als Fläche über die ganze Höhe unter dem Kopf, weich ein- und ausgeblendet */
+@media (max-width: 920px) {
+  .menu {
+    display: block;
+  }
+
+  /* absolut statt fixed: der Kopf hat backdrop-filter und wäre sonst der Bezug für fixed */
+  .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: calc(100dvh - var(--_header-height));
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 12px 20px max(24px, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-12px);
+    transition:
+      opacity 0.25s ease,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 0.35s;
+  }
+
+  .open {
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.25s ease,
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s;
+  }
+
+  /* Punkte erscheinen nacheinander (Reihenfolge --_i aus Header.tsx) */
+  .nav > * {
+    --_i: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .open > * {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.35s ease calc(60ms + var(--_i) * 45ms),
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1) calc(60ms + var(--_i) * 45ms);
+  }
+
+  .nav > :not(.action) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nav .link {
+    padding: 16px 4px;
+    font-size: 1.2rem;
+    color: var(--ink);
+    border-radius: 0;
+  }
+
+  .nav .link[aria-current="page"] {
+    box-shadow: none;
+    color: var(--_link-color, var(--primary));
+  }
+
+  .action {
+    margin: 24px 0 0;
+    justify-content: center;
+    padding-block: 14px;
+  }
+
+  .action + .action {
+    margin: 10px 0 0;
+  }
+
+  .embedded {
+    padding-block: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bars > span,
+  .nav,
+  .open,
+  .nav > *,
+  .open > * {
+    transition: none;
+  }
+}

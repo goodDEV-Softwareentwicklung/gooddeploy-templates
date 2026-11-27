@@ -1,0 +1,70 @@
+/* Logo in Kopf und Fuß. Theme-Tokens: --logo-radius, --logo-mark-*, --logo-text-display;
+   im Fuß zusätzlich --logo-mark-dark-*. */
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: var(--logo-mark-width, 44px);
+  height: var(--logo-mark-height, 44px);
+  padding: var(--logo-mark-padding, 0);
+  flex-shrink: 0;
+  background: var(--logo-mark-bg, var(--primary));
+  color: var(--logo-mark-color, var(--primary-ink));
+  border: var(--logo-mark-border, none);
+  border-radius: var(--logo-radius, var(--radius));
+  transform: var(--logo-mark-transform, none);
+}
+
+.text {
+  display: var(--logo-text-display, flex);
+  flex-direction: column;
+}
+
+.name {
+  font-family: var(--font-head), serif;
+  font-weight: var(--head-weight);
+  text-transform: var(--head-transform);
+  letter-spacing: var(--head-tracking);
+  line-height: 1.1;
+  text-wrap: balance;
+  font-size: 1.3rem;
+}
+
+.place {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* auf dunkler Fläche (Fuß) */
+.light {
+  color: var(--dark-ink);
+}
+
+.light .mark {
+  padding: var(--logo-mark-dark-padding, var(--logo-mark-padding, 0));
+  background: var(--logo-mark-dark-bg, var(--logo-mark-bg, var(--accent)));
+  color: var(--logo-mark-color, var(--accent-ink));
+  border-radius: var(--logo-mark-dark-radius, var(--logo-radius, var(--radius)));
+}
+
+/* helle Fassung des Logos: keine Plakette, Werte wie im Kopf */
+.light.ready .mark {
+  padding: var(--logo-mark-padding, 0);
+  background: var(--logo-mark-bg, var(--accent));
+  border-radius: var(--logo-radius, var(--radius));
+}
+
+.light .place {
+  color: inherit;
+  opacity: 0.7;
+}

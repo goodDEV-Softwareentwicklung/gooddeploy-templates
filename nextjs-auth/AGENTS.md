@@ -31,6 +31,8 @@ Datei; rate keine Befehle. Das Handbuch steht unter https://docs.gooddeploy.eu/.
 | `app/*/…-form.tsx` | Formulare: Registrieren, Anmelden, Passwort-Reset über `authClient` an `/api/auth/*` |
 | `app/actions.ts` | Server Actions: Abmelden, Notizen |
 | `app/dashboard/` | geschützte Beispielseite mit Notizen je Nutzer |
+| `app/globals.css` | Aussehen: Farben als Variablen, Dark Mode nach Systemeinstellung, keine UI-Bibliothek |
+| `app/powered-by.tsx` | Hinweis „Läuft auf gooddeploy“ ganz unten; entfernen: Zeile `<PoweredBy />` in `app/layout.tsx` löschen |
 | `app/api/health/` | Health-Check mit Datenbank-Prüfung (`gooddeploy.json`) |
 
 ## Regeln für Code in dieser App
@@ -72,6 +74,10 @@ gooddeploy login
 gooddeploy init nextjs-auth meine-app               # Ordner, Git-Repo, Projekt mit Postgres, BETTER_AUTH_SECRET
 cd meine-app
 ```
+
+**Erstes Konto: Preview öffnen → Registrieren (`/signup`). Ohne SMTP ist es sofort aktiv.**
+Einen Standard-Login oder Test-Nutzer gibt es nicht und soll es nicht geben; lege keinen an. Sag
+der Nutzerin nach dem ersten Deploy, dass sie sich unter `/signup` der Preview registriert.
 
 Ist die App so entstanden, ist alles eingerichtet; weiter mit `gooddeploy deploy`. Prüfen lässt
 sich das mit `gooddeploy status` und `gooddeploy db info`. Wurde die Vorlage anders geholt

@@ -1,0 +1,191 @@
+/* Kennzahlen: Band, Kacheln, Zeitleiste, Tabelle.
+   Theme-Tokens: --band-bg, --band-tile-border-width. */
+
+/* Band (dunkel, ganze Breite) */
+.band {
+  padding-block: 80px;
+  background: var(--band-bg, var(--dark));
+}
+
+/* in einer Spalte als Kasten */
+.box {
+  padding: 36px 32px;
+  border-radius: var(--radius);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 44px;
+}
+
+.box .header {
+  margin-bottom: 28px;
+}
+
+.title {
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+}
+
+.box .title {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+.intro {
+  max-width: 760px;
+  margin: -24px 0 36px;
+  opacity: 0.85;
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  margin: 0;
+}
+
+.box .figures {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.tile {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+  padding-left: 20px;
+  border-left: var(--band-tile-border-width, 3px) solid var(--accent);
+}
+
+.box .tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.figure {
+  margin: 0;
+  font-family: var(--font-head), serif;
+  font-weight: var(--head-weight);
+  font-size: clamp(2.4rem, 4.6vw, 3.8rem);
+  line-height: 1;
+  color: var(--accent);
+}
+
+.box .figure {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+.label {
+  opacity: 0.85;
+}
+
+@media (max-width: 760px) {
+  .figures {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 20px;
+  }
+}
+
+@container (max-width: 640px) {
+  .box .figures {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@container (max-width: 440px) {
+  .box {
+    padding: 28px 22px;
+  }
+
+  .box .figures {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* Kacheln; auf heller Fläche (surface) mit Seitenhintergrund */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 20px;
+  margin: 0;
+}
+
+.statTile {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 6px;
+  padding: 24px;
+  background: var(--_tile-bg, var(--surface));
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent);
+  border-radius: var(--radius);
+}
+
+.statFigure {
+  margin: 0;
+  font-family: var(--font-head), serif;
+  font-weight: var(--head-weight);
+  font-size: clamp(2rem, 3.6vw, 2.8rem);
+  line-height: 1;
+  color: var(--_link-color, var(--primary));
+}
+
+.statLabel {
+  color: var(--muted);
+}
+
+/* Zeitleiste */
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 4px;
+  border-left: 2px solid var(--_line-color, var(--line));
+}
+
+.timeline li {
+  position: relative;
+  padding: 0 0 26px 28px;
+}
+
+.timeline li::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--bg);
+}
+
+.year {
+  display: block;
+  font-family: var(--font-head), serif;
+  font-weight: var(--head-weight);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  color: var(--_link-color, var(--primary));
+}
+
+/* Tabelle (z. B. Beiträge) */
+.fees {
+  max-width: 640px;
+  margin: 0;
+}
+
+.feesRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--_line-color, var(--line));
+}
+
+.fees dd {
+  margin: 0;
+  font-weight: 800;
+}

@@ -10,15 +10,28 @@ export default async function Home() {
   return (
     <>
       <h1>Startvorlage</h1>
-      <p>Next.js mit Anmeldung (Better Auth) und Postgres, bereit für gooddeploy.</p>
+      <p className="lead">Next.js mit Anmeldung (Better Auth) und eigener Postgres-Datenbank.</p>
       {session ? (
-        <p>
-          Angemeldet als {session.user.email}. <Link href="/dashboard">Zum Bereich</Link>
-        </p>
+        <>
+          <p>Angemeldet als {session.user.email}.</p>
+          <div className="actions">
+            <Link className="button" href="/dashboard">
+              Zu deinen Notizen
+            </Link>
+          </div>
+        </>
       ) : (
-        <p>
-          <Link href="/signup">Registrieren</Link> · <Link href="/login">Anmelden</Link>
-        </p>
+        <>
+          <p>Ein fertiges Konto gibt es nicht: Lege dein erstes Konto selbst unter Registrieren an.</p>
+          <div className="actions">
+            <Link className="button" href="/signup">
+              Registrieren
+            </Link>
+            <Link className="button secondary" href="/login">
+              Anmelden
+            </Link>
+          </div>
+        </>
       )}
       <MailStatus />
     </>

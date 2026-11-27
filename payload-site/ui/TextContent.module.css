@@ -1,0 +1,4 @@
+/* Kopf ist global (SectionHeader nutzt die gemeinsamen Abschnittsklassen) */
+.prose > :global(.section__header) {
+  max-width: 72ch;
+}

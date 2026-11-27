@@ -1,0 +1,248 @@
+/* Hero und Seitenkopf. Theme-Tokens: --hero-*, --eyebrow-rule, --title-weight. */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.title {
+  font-size: var(--hero-title-size, clamp(2.6rem, 6.2vw, 5.4rem));
+  line-height: var(--hero-title-line-height, 1.1);
+  font-weight: var(--hero-title-weight, var(--head-weight));
+  font-style: var(--hero-title-style, normal);
+}
+
+.lead {
+  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+  max-width: 600px;
+  margin: 22px 0 0;
+}
+
+/* Feine Linien links und rechts der Dachzeile; Breite 0 = keine.
+   Der Abstand zur Schrift folgt der Linie, damit ohne Linie nichts verrutscht;
+   die Grundlinie kommt vom Text (baseline), nicht von den leeren Linien. */
+.hero .eyebrow {
+  gap: 0;
+  align-items: baseline;
+}
+
+.hero .eyebrow::before,
+.hero .eyebrow::after {
+  content: "";
+  align-self: center;
+  width: var(--eyebrow-rule, 0px);
+  height: 1px;
+  background: currentColor;
+}
+
+.hero .eyebrow::before {
+  margin-inline-end: min(var(--eyebrow-rule, 0px), 8px);
+}
+
+.hero .eyebrow::after {
+  margin-inline-start: min(var(--eyebrow-rule, 0px), 8px);
+}
+
+/* voll: Foto über die ganze Breite */
+.full,
+.centered {
+  display: grid;
+  color: #fff;
+  background: var(--dark);
+  --_eyebrow-color: var(--accent);
+  /* weiß auf dem Foto; setzt ein Theme eine Fläche für Outline-Knöpfe
+     (--btn-outline-bg, z. B. playful), gilt seine Schriftfarbe dazu */
+  --_btn-outline-color: var(--btn-outline-color, #fff);
+}
+
+.full {
+  min-height: min(86vh, 760px);
+  align-items: end;
+  clip-path: var(--hero-clip, none);
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+}
+
+.full::after,
+.centered::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.full::after {
+  background: var(
+    --hero-overlay,
+    linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--dark) 92%, transparent) 0%,
+      color-mix(in srgb, var(--dark) 55%, transparent) 55%,
+      color-mix(in srgb, var(--dark) 10%, transparent) 100%
+    )
+  );
+}
+
+.full .inner,
+.centered .inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 140px 24px 96px;
+}
+
+.full .text {
+  max-width: 760px;
+}
+
+/* Lesbarkeit von Text direkt auf Fotos */
+.full .text,
+.centered .text {
+  text-shadow: 0 1px 18px color-mix(in srgb, var(--dark) 70%, transparent);
+}
+
+/* zentriert: ruhiger, mittig, dunkle Überlagerung */
+.centered {
+  min-height: min(82vh, 720px);
+  align-items: center;
+  text-align: center;
+  --_btn-row-justify: center;
+}
+
+.centered::after {
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--dark) 70%, transparent),
+    color-mix(in srgb, var(--dark) 94%, transparent) 75%
+  );
+}
+
+.centered .text {
+  max-width: 820px;
+  margin-inline: auto;
+}
+
+.centered .lead {
+  margin-inline: auto;
+}
+
+/* geteilt: Text links, Bild rechts */
+.split {
+  background: var(--hero-split-bg, transparent);
+}
+
+.split .inner {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 64px;
+  align-items: center;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding: 72px 24px 96px;
+}
+
+.split .lead {
+  color: var(--muted);
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+}
+
+.image {
+  border-radius: var(--hero-image-radius, var(--radius));
+  border: var(--hero-image-border, none);
+  box-shadow: var(--hero-image-shadow, none);
+  transform: var(--hero-image-transform, none);
+}
+
+.sticker {
+  position: absolute;
+  left: -24px;
+  bottom: 40px;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: var(--hero-sticker-border, none);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  transform: var(--hero-sticker-transform, none);
+}
+
+@media (max-width: 860px) {
+  .split .inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding-top: 48px;
+  }
+
+  .frame {
+    aspect-ratio: 4 / 3;
+    margin-left: 16px;
+  }
+
+  .full .inner,
+  .centered .inner {
+    padding: 120px 16px 72px;
+  }
+}
+
+/* Seitenkopf der Unterseiten (Variante page) */
+.page {
+  position: relative;
+  background: var(--dark);
+  color: var(--dark-ink);
+  overflow: hidden;
+  --_eyebrow-color: var(--accent);
+}
+
+.pageInner {
+  position: relative;
+  z-index: 1;
+  padding-block: 96px 72px;
+}
+
+.pageTitle {
+  font-size: var(--hero-page-title-size, clamp(2.4rem, 5vw, 4.2rem));
+  font-weight: var(--title-weight, var(--head-weight));
+  max-width: 900px;
+}
+
+.pageIntro {
+  max-width: 680px;
+  margin: 20px 0 0;
+  font-size: 1.2rem;
+  opacity: 0.88;
+}
+
+.pageImage {
+  position: absolute;
+  inset: 0;
+}
+
+.pageWithImage {
+  color: #fff;
+}
+
+.pageWithImage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--dark) 92%, transparent) 30%,
+    color-mix(in srgb, var(--dark) 40%, transparent)
+  );
+}
+
+.pageWithImage .pageInner {
+  padding-block: 140px 96px;
+}

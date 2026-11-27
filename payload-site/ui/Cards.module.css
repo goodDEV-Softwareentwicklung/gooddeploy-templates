@@ -1,0 +1,210 @@
+/* Karten mit Bild und Icon-Kacheln. Theme-Tokens: --card-*, --panel-*.
+   Auch von PostList genutzt (gleiches Kartenraster). */
+
+.grid {
+  display: grid;
+  gap: 28px;
+}
+
+.columns2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 700px) {
+  .columns2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.columns3 {
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+}
+
+.columns4 {
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--_card-bg, var(--card-bg, var(--surface)));
+  border: var(--card-border, 1px solid var(--line));
+  border-top: var(--card-border-top, var(--card-border, 1px solid var(--line)));
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow, none);
+  overflow: hidden;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: var(--card-hover-transform, translateY(-3px));
+  box-shadow: var(--card-shadow-hover, 0 18px 40px rgba(0, 0, 0, 0.08));
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  margin: var(--card-frame-margin, 0);
+  outline: var(--card-frame-outline, none);
+  outline-offset: var(--card-frame-outline-offset, 0);
+  border-bottom: var(--card-frame-border-bottom, none);
+}
+
+.tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.body {
+  padding: 24px var(--card-body-padding-inline, 24px) 28px;
+}
+
+.icon {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 16px;
+  border-radius: var(--logo-radius, var(--radius));
+  background: color-mix(in srgb, var(--_link-color, var(--primary)) 12%, transparent);
+  color: var(--_link-color, var(--primary));
+}
+
+.title {
+  font-size: 1.45rem;
+  margin-bottom: 10px !important;
+}
+
+.text {
+  margin: 0;
+  color: var(--muted);
+}
+
+.details {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.92rem;
+}
+
+.details li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 4px;
+}
+
+.details li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.6em;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+/* Icon-Kachel; auf heller Fläche (surface) mit Seitenhintergrund.
+   Karten und Kacheln tragen tone-light (Text dunkel, auch in dunklen Abschnitten). */
+.tile {
+  padding: 30px 28px;
+  background: var(--_tile-bg, var(--surface));
+  border: var(--panel-border, 1px solid var(--line));
+  border-radius: var(--radius);
+  box-shadow: var(--panel-shadow, none);
+}
+
+.tileTitle {
+  font-size: 1.3rem;
+  margin-bottom: 8px !important;
+}
+
+.tileText {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Logos (Partner, Sponsoren): Bild ganz, auf heller Fläche, Name klein darunter.
+   Kleiner Abstand; mobil zwei nebeneinander statt eines pro Zeile */
+.logoGrid {
+  gap: 20px;
+}
+
+@media (max-width: 700px) {
+  .logoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .logoFrame {
+    padding: 12px 14px;
+  }
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--muted);
+}
+
+.logoFrame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 2;
+  padding: 18px 22px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+
+.logoFrame > * {
+  width: 100%;
+  height: 100%;
+}
+
+.logoFallback {
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: center;
+}
+
+.logoName {
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+a.logo:hover .logoFrame,
+a.logo:focus-visible .logoFrame {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--line));
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+a.logo:hover .logoName {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoFrame {
+    transition: none;
+  }
+}

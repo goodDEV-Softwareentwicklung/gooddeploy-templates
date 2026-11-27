@@ -1,0 +1,15 @@
+/* Ohne Spezifität (:where), damit die Klasse des Aufrufers (Position, Format) gewinnt */
+:where(.media) {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+:where(.media) img {
+  object-fit: cover;
+}
+
+:where(.contain) img {
+  object-fit: contain;
+}

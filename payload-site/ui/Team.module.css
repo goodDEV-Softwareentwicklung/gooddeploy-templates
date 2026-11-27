@@ -1,0 +1,42 @@
+.team {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 36px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+/* Foto bzw. Initialen */
+.member > :first-child {
+  margin-bottom: 12px;
+}
+
+.member span:last-child,
+.role {
+  color: var(--_muted-color, var(--muted));
+}
+
+.contact {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.contact a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--_link-color, var(--primary));
+  overflow-wrap: anywhere;
+}

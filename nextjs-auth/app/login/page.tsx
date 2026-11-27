@@ -7,10 +7,10 @@ export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
   return (
-    <>
+    <div className="narrow">
       <h1>Anmelden</h1>
       <LoginForm />
-      <p>
+      <p className="muted">
         Noch kein Konto? <Link href="/signup">Registrieren</Link>
         {mailEnabled() && (
           <>
@@ -20,6 +20,6 @@ export default function LoginPage() {
         )}
       </p>
       <MailStatus />
-    </>
+    </div>
   );
 }

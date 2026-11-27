@@ -1,0 +1,166 @@
+/* --------------------------------------------------------------------------
+   Untermenü im Kopf: Aufklappen per Knopf, Liste unter dem Punkt.
+   Grundstil der Punkte (Abstand, Schrift) kommt über `linkClassName` aus dem Kopf.
+   -------------------------------------------------------------------------- */
+
+.group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.groupButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -8px;
+  padding: 8px 6px;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  border-radius: var(--btn-radius, var(--radius));
+}
+
+.groupButton:hover,
+.toggle:hover,
+.groupButton[aria-expanded="true"],
+.toggle[aria-expanded="true"],
+.groupActive .groupButton {
+  color: var(--ink);
+}
+
+.groupActive .groupButton {
+  box-shadow: inset 0 -3px 0 var(--accent);
+}
+
+.chevron {
+  transition: transform 0.15s ease;
+}
+
+[aria-expanded="true"] > .chevron {
+  transform: rotate(180deg);
+}
+
+.submenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+  min-width: 220px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+}
+
+.submenu[hidden] {
+  display: none;
+}
+
+.sublink {
+  display: block;
+  padding: 10px 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+  border-radius: var(--btn-radius, var(--radius));
+}
+
+.sublink:hover {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.sublink[aria-current="page"] {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+@keyframes submenu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+
+  .submenu {
+    animation: none !important;
+  }
+}
+
+/* Mobil (offenes Menü wie in Header.module.css): aufklappbar, eingerückt statt schwebend */
+@media (max-width: 920px) {
+  .group {
+    flex-wrap: wrap;
+  }
+
+  .group > a {
+    flex: 1;
+  }
+
+  .groupButton {
+    flex: 1;
+    justify-content: space-between;
+    padding: 12px 8px;
+    font-size: 1.05rem;
+    text-align: left;
+  }
+
+  .toggle {
+    margin-left: 0;
+    padding: 16px 12px;
+    color: var(--ink);
+  }
+
+  .chevron {
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .submenu {
+    position: static;
+    flex-basis: 100%;
+    min-width: 0;
+    margin: -4px 0 14px 4px;
+    padding: 0 0 0 14px;
+    background: none;
+    border: 0;
+    border-left: 2px solid var(--accent);
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .submenu:not([hidden]) {
+    animation: submenu-in 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .sublink {
+    padding: 10px 8px;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .sublink[aria-current="page"] {
+    color: var(--ink);
+  }
+}

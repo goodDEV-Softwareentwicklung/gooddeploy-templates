@@ -1,0 +1,53 @@
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+/* in schmalen Spalten Bild über Text */
+.stacked {
+  display: grid;
+  gap: 24px;
+}
+
+.image {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.right .image {
+  order: 2;
+}
+
+.body {
+  --_btn-row-space: 24px;
+}
+
+.body > :global(.prose) {
+  margin-top: 16px;
+}
+
+@media (max-width: 860px) {
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .right .image {
+    order: 0;
+  }
+}
+
+@container (max-width: 640px) {
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .right .image {
+    order: 0;
+  }
+}

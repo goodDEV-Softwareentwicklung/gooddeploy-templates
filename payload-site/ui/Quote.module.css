@@ -1,0 +1,33 @@
+/* Zitat. Theme-Tokens: --quote-*. Breite begrenzt der Abschnitt (--_quote-max-width). */
+.quote {
+  max-width: var(--_quote-max-width, none);
+  margin: 0;
+  padding: 40px;
+  /* auf Primärfläche dunkel statt Primär auf Primär (tone-primary) */
+  background: var(--_quote-bg, var(--primary));
+  color: var(--_quote-color, var(--primary-ink));
+  border: var(--quote-border, none);
+  border-radius: var(--quote-radius, var(--radius));
+  box-shadow: var(--quote-shadow, none);
+}
+
+.mark {
+  color: var(--accent);
+}
+
+.text {
+  margin: 16px 0 28px;
+  font-family: var(--font-head), serif;
+  font-size: var(--quote-text-size, 1.5rem);
+  font-style: var(--quote-text-style, normal);
+  line-height: 1.35;
+  font-weight: 500;
+  text-transform: none;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 0.95rem;
+}

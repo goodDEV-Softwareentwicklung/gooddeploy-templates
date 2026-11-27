@@ -15,6 +15,20 @@ Arbeitest du mit Claude Code, Cursor oder Copilot: Die Regeln für den Assistent
 
 Handbuch: [Neue App mit Login starten](https://docs.gooddeploy.eu/app-mit-login.html).
 
+## Loslegen
+
+**Erstes Konto: Preview öffnen → Registrieren (`/signup`). Ohne SMTP ist es sofort aktiv.**
+Einen Standard-Login gibt es nicht; das erste Konto legst du selbst an. Hast du die App noch
+nicht auf gooddeploy, geht das mit:
+
+```sh
+gooddeploy login
+gooddeploy init nextjs-auth meine-app --deploy   # Ordner, Projekt mit Postgres, erste Preview
+```
+
+Sobald `SMTP_*` gesetzt ist (siehe „Mail einschalten“ unten), bestätigen neue Konten ihre
+Adresse per Link.
+
 ## Lokal starten
 
 Du brauchst Node.js 22.18 oder neuer und Docker.
@@ -34,6 +48,8 @@ z. B. die Ausgabe von `openssl rand -base64 32`. Die Datei bleibt auf deinem Rec
 npm run db:migrate     # Tabellen anlegen
 npm run dev            # http://localhost:3000
 ```
+
+Auch lokal gibt es kein fertiges Konto: unter `http://localhost:3000/signup` registrieren.
 
 ## Veröffentlichen mit gooddeploy
 
@@ -55,6 +71,11 @@ die eigene `server.js`.
 
 - **Tabelle ändern:** `db/schema.ts` bearbeiten, `npm run db:generate`, die neue Datei in
   `drizzle/` committen, deployen.
+- **Aussehen:** Farben, Abstände und Dark Mode (folgt der Systemeinstellung) stehen als
+  Variablen oben in `app/globals.css`, ohne UI-Bibliothek. Tausch sie gegen die Farben deines
+  Kunden oder bau Tailwind o. Ä. ein, wenn du es brauchst.
+- **Hinweis „Läuft auf gooddeploy“ entfernen:** die Zeile `<PoweredBy />` in `app/layout.tsx`
+  löschen (den Import und `app/powered-by.tsx` gleich mit, wenn du magst).
 - **Seite schützen:** `await requireSession()` aus `lib/session.ts` am Anfang der Seite.
 - **Daten je Nutzer:** immer nach `session.user.id` filtern (Beispiel: `lib/notes.ts`).
 - **Mail einschalten:** `SMTP_HOST`, `SMTP_PORT`, `SMTP_FROM` (und meist `SMTP_USER`,

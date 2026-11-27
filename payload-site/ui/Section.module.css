@@ -1,0 +1,85 @@
+/* Abschnitt: Hintergrund, Abstand, Breite, Spalten.
+   Textfarbe und Kontext-Variablen (Links, Dachzeile, Knöpfe) setzt die
+   globale Klasse des Farbkontexts (tone-*, ui/tones.ts); die helle
+   Fläche (surface) setzt zusätzlich den Hintergrund der Kacheln. */
+
+.section {
+  padding-block: var(--section-space, 96px);
+}
+
+@media (max-width: 860px) {
+  .section {
+    padding-block: 64px;
+  }
+}
+
+/* nach der Grundregel, damit sie auch mobil gelten */
+.space-none {
+  padding-block: 0;
+}
+
+.space-small {
+  padding-block: calc(var(--section-space, 96px) * 0.5);
+}
+
+.space-large {
+  padding-block: calc(var(--section-space, 96px) * 1.4);
+}
+
+.none {
+  background: var(--bg);
+}
+
+.surface {
+  background: var(--surface);
+  --_tile-bg: var(--bg);
+}
+
+.dark {
+  background: var(--dark);
+}
+
+.primary {
+  background: var(--primary);
+}
+
+/* Karten bleiben auf farbigem Grund hell, auch wenn das Theme sie durchsichtig macht */
+.dark,
+.primary {
+  --_card-bg: var(--surface);
+}
+
+.inner {
+  /* Zitat direkt im Abschnitt nicht über die ganze Breite */
+  --_quote-max-width: 820px;
+}
+
+/* Inhaltsbreite; zwei Klassen, damit sie unabhängig von der Ladereihenfolge
+   gegen .container (global) gewinnt */
+:global(.container).narrow {
+  max-width: 820px;
+}
+
+:global(.container).wide {
+  max-width: calc(var(--container-width, 1200px) + 200px);
+}
+
+/* Spalten: Vorlage kommt als --columns aus dem Layout (z. B. "2fr 1fr") */
+.grid {
+  display: grid;
+  grid-template-columns: var(--columns, 1fr);
+  gap: 48px;
+  align-items: start;
+  --_quote-max-width: none;
+}
+
+.center {
+  align-items: center;
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}

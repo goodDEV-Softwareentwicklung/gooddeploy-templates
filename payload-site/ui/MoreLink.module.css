@@ -1,0 +1,14 @@
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 36px;
+  font-weight: 700;
+  color: var(--_link-color, var(--primary));
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}

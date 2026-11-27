@@ -1,0 +1,277 @@
+/* ==========================================================================
+   Globale Grundlagen der Website
+
+   Hier steht nur, was mehrere Komponenten teilen: Reset, Typografie,
+   Inhaltsbreite, Abschnitts-Grundlagen und Fokus. Alles andere liegt im
+   CSS-Modul der jeweiligen ui-Komponente (ui/<Komponente>.module.css).
+
+   Kontext-Variablen mit Unterstrich (--_…) sind intern: Ein Rahmen (z. B. ein
+   dunkler Abschnitt) setzt sie, Komponenten darin lesen sie mit Standardwert.
+   Sie sind keine Theme-Tokens; Themes setzen nur die Tokens aus
+   themes/contract.ts.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Formularelemente und Bildlaufleisten folgen hell/dunkel */
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body), system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  /* Zweifarbig: Akzent außen, Textfarbe innen; sichtbar auch bei hellem Akzent (bold: Gelb auf Weiß) */
+  outline: 3px solid var(--accent, #1fe48f);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--ink, #111);
+}
+
+/* ==========================================================================
+   Grundgerüst und Typografie
+   ========================================================================== */
+
+.site {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Ohne Spezifität, damit Klassen der Komponenten (Größe, Gewicht) gewinnen */
+:where(.site) :where(h1, h2, h3) {
+  font-family: var(--font-head), serif;
+  font-weight: var(--head-weight);
+  text-transform: var(--head-transform);
+  letter-spacing: var(--head-tracking);
+  line-height: 1.1;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* ==========================================================================
+   Farbkontexte (ui/tones.ts)
+   Jede Fläche mit eigener Hintergrundfarbe trägt eine dieser Klassen und
+   setzt damit Textfarbe und Kontext-Variablen für alles darin. Helle Flächen
+   (Kacheln, Karten, Formulare) tragen tone-light und erben so nie die helle
+   Schrift eines dunklen Abschnitts. Den Hintergrund setzt die Fläche selbst.
+   tests/themes.test.ts prüft die Farbpaare für alle Themes und Paletten
+   (WCAG AA), hell und dunkel.
+   ========================================================================== */
+
+.tone-light {
+  color: var(--ink);
+  --_link-color: var(--primary);
+  --_muted-color: var(--muted);
+  --_eyebrow-color: var(--primary);
+  --_line-color: var(--line);
+  --_btn-primary-bg: var(--primary);
+  --_btn-primary-color: var(--primary-ink);
+  --_quote-bg: var(--primary);
+  --_quote-color: var(--primary-ink);
+}
+
+.tone-dark {
+  color: var(--dark-ink);
+  --_link-color: var(--dark-ink);
+  /* gedämpft = volle Textfarbe des Grundes; abgeschwächt reicht der Kontrast
+     nicht in jeder Palette (und nicht bei eigenen Farben) */
+  --_muted-color: var(--dark-ink);
+  --_eyebrow-color: var(--accent);
+  --_line-color: color-mix(in srgb, var(--dark-ink) 28%, transparent);
+  --_btn-primary-bg: var(--primary);
+  --_btn-primary-color: var(--primary-ink);
+  --_quote-bg: var(--primary);
+  --_quote-color: var(--primary-ink);
+}
+
+.tone-primary {
+  color: var(--primary-ink);
+  --_link-color: var(--primary-ink);
+  --_muted-color: var(--primary-ink);
+  --_eyebrow-color: var(--primary-ink);
+  --_line-color: color-mix(in srgb, var(--primary-ink) 28%, transparent);
+  /* Knopf und Zitat in Primärfarbe auf Primärfläche sichtbar halten */
+  --_btn-primary-bg: var(--primary-ink);
+  --_btn-primary-color: var(--primary);
+  --_quote-bg: var(--dark);
+  --_quote-color: var(--dark-ink);
+}
+
+/* ==========================================================================
+   Inhaltsbreite und Abschnitts-Grundlagen
+   Von mehreren Komponenten genutzt (Section, SectionHeader, CallToAction,
+   MediaText, Hero, Stats), darum global.
+   ========================================================================== */
+
+.container {
+  max-width: var(--container-width, 1200px);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* Dachzeile; die Farbe setzt der Farbkontext (--_eyebrow-color) */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--_eyebrow-color, var(--primary));
+}
+
+.section__header {
+  max-width: 760px;
+  margin-bottom: var(--_section-header-space, 48px);
+}
+
+.section__title {
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  font-weight: var(--title-weight, var(--head-weight));
+  margin-bottom: 18px !important;
+}
+
+.section__intro {
+  font-size: 1.15rem;
+  color: var(--_muted-color, var(--muted));
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .container {
+    padding-inline: 16px;
+  }
+}
+
+/* ==========================================================================
+   Fließtext aus Lexical (blocks/RichText.tsx)
+   ========================================================================== */
+
+.prose {
+  max-width: 72ch;
+}
+
+.prose--full {
+  max-width: none;
+}
+
+.prose p {
+  font-size: 1.08rem;
+  margin: 0 0 1.1em;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin: 1.4em 0 0.5em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.3em;
+}
+
+.prose a {
+  color: var(--_link-color, var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* Knopf als Baustein im Text (steht direkt im Container, nicht im Absatz) */
+.prose > a {
+  margin: 0.4em 0;
+}
+
+/* ==========================================================================
+   Klassen der Modul-Schicht (blocks/), nicht der ui-Komponenten.
+   BlockFrame, RenderBlocks und der Layout-Abschnitt setzen sie direkt.
+   ========================================================================== */
+
+/* Spalten als Container: Module richten sich nach ihrer Spaltenbreite */
+.block-in-column {
+  container-type: inline-size;
+  min-width: 0;
+  /* Kopf eines Moduls in einer Spalte mit weniger Abstand */
+  --_section-header-space: 24px;
+}
+
+.layout-grid__column {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  min-width: 0;
+}
+
+.block-unknown {
+  padding: 16px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius);
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Dunkler Modus (folgt der Systemeinstellung)
+   Die Grundflächen setzt themeCss (themes/resolve.ts). Auf dunklem Grund
+   reicht der Kontrast der Primärfarbe für Text nicht in jeder Palette:
+   Links und Dachzeilen nehmen dort die Akzentfarbe.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  .site,
+  .tone-light {
+    --_link-color: var(--accent);
+    --_eyebrow-color: var(--accent);
+  }
+}
+
+/* ==========================================================================
+   Leerer Zustand und „Seite nicht gefunden“
+   ========================================================================== */
+
+.empty-state {
+  padding-block: var(--section-space, 88px);
+  max-width: 720px;
+}
+
+.empty-state h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 16px;
+}
+
+.empty-state a {
+  color: var(--_link-color, var(--primary));
+}
+
+/* Footer-Banner (app/(site)/powered-by.tsx) */
+.powered-by {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--muted);
+  background: var(--bg);
+  padding: 1.25rem 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.powered-by a {
+  color: inherit;
+}

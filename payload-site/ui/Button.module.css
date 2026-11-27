@@ -1,0 +1,68 @@
+/* Knöpfe. Theme-Tokens: --btn-* (themes/contract.ts).
+   Kontext: --_btn-primary-bg/-color (Primärfläche), --_btn-outline-color (Foto-Hero),
+   --_btn-row-justify, --_btn-row-space (Abstand der Knopfzeile).
+   Diese Kontextvariablen dürfen auch Slot-Komponenten von Themes setzen (z. B. playful/PlayfulHero),
+   nicht aber die Theme-Daten; Themes nutzen dafür die öffentlichen --btn-*-Tokens. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.7em 1.3em;
+  border: 2px solid var(--btn-border-color, transparent);
+  border-radius: var(--btn-radius, var(--radius));
+  font: inherit;
+  font-family: var(--btn-font, var(--font-body), system-ui, sans-serif);
+  font-weight: 700;
+  font-size: var(--btn-font-size, 0.95rem);
+  line-height: 1.2;
+  text-transform: var(--btn-transform, none);
+  letter-spacing: var(--btn-tracking, normal);
+  text-decoration: none;
+  box-shadow: var(--btn-shadow, none);
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    filter 0.15s,
+    background 0.15s;
+}
+
+.btn:hover {
+  transform: var(--btn-hover-transform, translateY(-1px));
+  filter: brightness(1.06);
+  box-shadow: var(--btn-shadow-hover, var(--btn-shadow, none));
+}
+
+.accent {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.primary {
+  background: var(--_btn-primary-bg, var(--primary));
+  color: var(--_btn-primary-color, var(--primary-ink));
+}
+
+.outline {
+  background: var(--btn-outline-bg, transparent);
+  border-color: var(--btn-border-color, currentColor);
+  color: var(--_btn-outline-color, var(--btn-outline-color, currentColor));
+}
+
+.lg {
+  font-size: var(--btn-font-size-lg, 1.05rem);
+  padding: var(--btn-padding-lg, 0.85em 1.6em);
+}
+
+.block {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: var(--_btn-row-justify, flex-start);
+  gap: 12px;
+  margin-top: var(--_btn-row-space, 32px);
+}

@@ -1,0 +1,28 @@
+/* Hinweiskasten im Fließtext; hell mit tone-light, Primär mit tone-primary */
+.box {
+  margin: 1.4em 0;
+  padding: 20px 24px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border-left: 4px solid var(--primary);
+}
+
+/* Textfarbe aus tone-primary (InfoBox.tsx) */
+.primary {
+  background: var(--primary);
+  border-left-color: var(--accent);
+}
+
+.accent {
+  background: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  border-left-color: var(--accent);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.text {
+  margin: 0;
+}

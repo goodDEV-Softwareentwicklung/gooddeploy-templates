@@ -8,9 +8,9 @@ export default function ForgotPasswordPage() {
   // Ohne Mail-Versand gibt es diese Seite nicht.
   if (!mailEnabled()) notFound();
   return (
-    <>
+    <div className="narrow">
       <h1>Passwort vergessen</h1>
       <ForgotForm />
-    </>
+    </div>
   );
 }
