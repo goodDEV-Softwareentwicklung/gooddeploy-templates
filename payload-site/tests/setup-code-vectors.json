@@ -1,0 +1,9 @@
+{
+  "about": "Testvektoren für den Einrichtungscode (HMAC-SHA256(secret, \"first-user\"), 16 Zeichen Base32 in Vierergruppen). Gelesen von tests/setup-code-vectors.test.ts (lib/setup-code.ts) und von internal/config/setupcode_test.go im gooddeploy-Repo (gooddeploy init zeigt den Code). Nur unechte Geheimnisse.",
+  "vectors": [
+    { "secret": "test-secret-payload-1234567890", "code": "2XVO-HESH-2EF7-OVKD" },
+    { "secret": "test-secret-wie/init+base64==", "code": "7YSB-LQ4Z-ELGU-AL7E" },
+    { "secret": "test-secret-ümlaut-ß-€", "code": "N6L5-H2PT-M35Q-D7ZI" },
+    { "secret": "test-secret-x", "code": "WPO7-XIVO-HAGP-PPZF" }
+  ]
+}

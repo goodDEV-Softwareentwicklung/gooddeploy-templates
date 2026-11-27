@@ -9,8 +9,9 @@ const nextConfig: NextConfig = {
   // Next.js schreibt sonst bei `next dev` eigene Regeln in AGENTS.md (die Datei gehört der Vorlage).
   agentRules: false,
   images: {
-    // Bilder liefert Payload unter /api/media/file/… aus (aus dem S3-Speicher).
-    localPatterns: [{ pathname: "/api/media/file/**" }],
+    // Bilder liefert Payload unter /api/media/file/… aus (aus dem S3-Speicher),
+    // die Beispielbilder der Vorlage liegen in public/samples/.
+    localPatterns: [{ pathname: "/api/media/file/**" }, { pathname: "/samples/**" }],
   },
 };
 

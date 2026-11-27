@@ -25,10 +25,17 @@ export function setupCode(secret: string): string {
   return out.match(/.{4}/g)!.join("-");
 }
 
-const normalize = (s: string) => s.toUpperCase().replace(/[^A-Z2-7]/g, "");
+// normalize entfernt nur Leerzeichen und Bindestriche. Jedes andere Zeichen
+// bleibt stehen und macht den Code ungültig (vorher fielen Zeichen außerhalb
+// von Base32 wie 0, 1, 8, 9 still weg, sodass „…H6JS1“ als richtig galt).
+// Großschreibung nur für ASCII: toUpperCase() machte z. B. aus „ı“ ein „I“
+// und aus „ß“ ein „SS“. \s umfasst auch Unicode-Leerzeichen (geschütztes
+// Leerzeichen, BOM), das hilft beim Kopieren und Einfügen.
+const normalize = (s: string) =>
+  s.replace(/[\s-]/g, "").replace(/[a-z]/g, (c) => c.toUpperCase());
 
 // validSetupCode vergleicht in konstanter Zeit; Groß-/Kleinschreibung,
-// Leerzeichen und Bindestriche zählen nicht.
+// Leerzeichen und Bindestriche zählen nicht, alle anderen Zeichen schon.
 export function validSetupCode(secret: string, input: unknown): boolean {
   if (typeof input !== "string") return false;
   const want = Buffer.from(normalize(setupCode(secret)));

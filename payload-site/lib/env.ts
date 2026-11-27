@@ -72,3 +72,10 @@ export function missingS3Variables(env: Env = process.env): string[] {
   if (!set) return [];
   return requiredS3Variables.filter((name) => !value(env, name));
 }
+
+// Website per Claude pflegen (MCP, plugins/siteMcp): an, solange SITE_MCP nicht
+// "false" ist. Aus heißt: /api/mcp und der Upload-Link antworten nicht, die
+// Sammlung der Schlüssel bleibt (Schema wie in den Migrationen).
+export function mcpEnabled(env: Env = process.env): boolean {
+  return value(env, "SITE_MCP")?.toLowerCase() !== "false";
+}

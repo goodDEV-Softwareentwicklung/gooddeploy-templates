@@ -13,6 +13,11 @@ type Args = { data: Record<string, unknown>; operation: string; req: { user?: ob
 const hook = requireSetupCode as unknown as (a: Args) => Record<string, unknown>;
 const data = { email: "a@example.invalid", password: "test-secret-pw" };
 
+// swapFirst ersetzt das erste Vorkommen von from; fehlt es, bleibt der Fall
+// trotzdem ungültig (ein Zeichen zu viel), damit der Test nie leer läuft.
+const swapFirst = (code: string, from: string, to: string) =>
+  code.includes(from) ? code.replace(from, to) : code + to;
+
 test("Einrichtungscode: 16 Zeichen Base32 in Vierergruppen, hängt nur am Geheimnis", () => {
   const code = setupCode(secret);
   assert.match(code, /^[A-Z2-7]{4}(-[A-Z2-7]{4}){3}$/);
@@ -20,7 +25,13 @@ test("Einrichtungscode: 16 Zeichen Base32 in Vierergruppen, hängt nur am Geheim
   assert.notEqual(setupCode(secret + "x"), code);
   assert.ok(validSetupCode(secret, code));
   assert.ok(validSetupCode(secret, code.toLowerCase().replaceAll("-", " ")));
-  for (const bad of [undefined, "", 42, code.slice(0, -1), code + "A", setupCode("anders")]) {
+  for (const bad of [
+    undefined, "", 42, code.slice(0, -1), code + "A", setupCode("anders"),
+    // Zeichen außerhalb von Base32 dürfen nicht still wegfallen (Tim, 27.11.2026: „…H6JS1“ galt als richtig).
+    code + "1", code + "0", "1" + code, code.replace("-", "-8-"), code + ".", code + "_",
+    // Großschreibung nur für ASCII: ı → I, ſ → S, ß → SS dürfen nicht gelten.
+    swapFirst(code, "I", "ı"), swapFirst(code, "S", "ſ"), swapFirst(code, "SS", "ß"),
+  ]) {
     assert.equal(validSetupCode(secret, bad), false, String(bad));
   }
 });

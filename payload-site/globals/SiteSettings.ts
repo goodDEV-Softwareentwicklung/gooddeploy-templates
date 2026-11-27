@@ -9,12 +9,15 @@ import { defaultTheme } from "../themes/registry.ts";
 import { getTheme, isPaletteOf, paletteOptions, themeOptions } from "../themes/resolve.ts";
 import { iconOptions } from "../ui/icons.ts";
 
+/** Farbwähler im Admin-Panel (components/admin/ColorField.tsx) */
+export const colorFieldComponent = "/components/admin/ColorField.tsx#ColorField";
+
 /** Eigene Farbe als Hex-Wert; leer = Wert aus Theme und Farbvariante */
 const colorField = (name: OverridableColor): Field => ({
   name,
   label: colorLabels[name],
   type: "text",
-  admin: { width: "50%", placeholder: "#1f5f6b" },
+  admin: { width: "50%", components: { Field: colorFieldComponent } },
   validate: (value: string | null | undefined) => (!value || isColor(value) ? true : "Farbe als Hex-Wert, z. B. #1f5f6b"),
 });
 
@@ -171,7 +174,7 @@ export const SiteSettings: GlobalConfig = {
               type: "group",
               admin: {
                 description:
-                  "Leer = Wert aus Theme und Farbvariante. Fläche und Text darauf brauchen genug Kontrast (WCAG AA: mindestens 4,5:1). Gilt für den hellen Modus; im dunklen Modus bleiben die Grundflächen dunkel.",
+                  "Leer = Wert aus Theme und Farbvariante. Fläche und Text darauf brauchen genug Kontrast (WCAG AA: mindestens 4,5:1); jedes Feld zeigt ihn an. Gilt für den hellen Modus; im dunklen Modus bleiben die Grundflächen dunkel.",
               },
               fields: [
                 { type: "row", fields: [colorField("primary"), colorField("primaryInk")] },

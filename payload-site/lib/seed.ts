@@ -1,6 +1,7 @@
 // Beispielinhalte für den ersten Start: die fiktive Musterfirma GmbH mit
-// Startseite, Unterseiten, Personen, Menü, Fuß und einer Weiterleitung. Sie zeigen, was die Module
-// können, und kommen ohne Bilder aus (Hochladen geht erst mit S3).
+// Startseite, Unterseiten, Personen, Menü, Fuß, einer Weiterleitung und den
+// Beispielbildern der Vorlage (lib/sample-images.ts, auch ohne S3). Alle Seiten
+// sind veröffentlicht. Sie zeigen, was die Module können.
 //
 // Läuft in lib/migrate-on-start.ts unter derselben Sperre wie die
 // Migrationen, nur solange es weder ein Konto noch eine Seite gibt: Sobald
@@ -8,6 +9,7 @@
 // Über die Local API mit dem aktuellen Schema (nach allen Migrationen), in
 // einer Transaktion: ganz oder gar nicht.
 import { commitTransaction, createLocalReq, initTransaction, killTransaction, type Payload } from "payload";
+import { sampleImages, type SampleFilename } from "./sample-images.ts";
 
 type Node = Record<string, unknown>;
 
@@ -72,6 +74,19 @@ export async function seedDemo(payload: Payload): Promise<number> {
 async function createDemo(payload: Payload, req: Awaited<ReturnType<typeof createLocalReq>>): Promise<number> {
   const opts = { req, overrideAccess: true } as const;
 
+  // Beispielbilder: Einträge in „Bilder“ ohne Datei in S3 (die Datei liegt in
+  // public/samples/). Direkt über die Datenbank, weil Payload sonst eine
+  // hochgeladene Datei verlangt; die Adresse setzt collections/Media.ts.
+  const image: Record<SampleFilename, number> = {} as Record<SampleFilename, number>;
+  for (const sample of sampleImages) {
+    const doc = await payload.db.create({
+      collection: "media",
+      data: { ...sample, mimeType: "image/webp", focalX: 50, focalY: 50, sample: true },
+      req,
+    });
+    image[sample.filename] = doc.id as number;
+  }
+
   const person = async (name: string, role: string, email: string, phone?: string) =>
     (await payload.create({ collection: "people", data: { name, role, email, phone }, ...opts })).id;
   const anna = await person("Anna Beispiel", "Geschäftsführerin", "anna.beispiel@example.com", "+49 123 456789-10");
@@ -94,7 +109,9 @@ async function createDemo(payload: Payload, req: Awaited<ReturnType<typeof creat
   ];
   const id: Record<string, number> = {};
   for (const { description, ...page } of pages) {
-    id[page.slug] = (await payload.create({ collection: "pages", data: { ...page, layout: [], meta: { description } }, ...opts })).id;
+    id[page.slug] = (
+      await payload.create({ collection: "pages", data: { ...page, layout: [], meta: { description }, _status: "published" }, ...opts })
+    ).id;
   }
 
   const cta = await payload.create({
@@ -120,6 +137,7 @@ async function createDemo(payload: Payload, req: Awaited<ReturnType<typeof creat
       {
         blockType: "hero",
         variant: "centered",
+        image: image["meeting-room.webp"],
         eyebrow: "Musterfirma GmbH",
         title: "Wir machen Komplexes einfach.",
         text: "Beratung, Software und Betrieb aus einer Hand: Wir begleiten mittelständische Unternehmen von der ersten Idee bis zum laufenden System.",
@@ -157,6 +175,17 @@ async function createDemo(payload: Payload, req: Awaited<ReturnType<typeof creat
           { value: "98 %", label: "Kunden, die wiederkommen" },
           { value: "24/7", label: "Überwachung im Betrieb" },
         ],
+      },
+      {
+        blockType: "mediaText",
+        image: image["workspace.webp"],
+        imagePosition: "right",
+        eyebrow: "Unser Büro",
+        title: "Ruhe zum Nachdenken, Platz zum Ausprobieren",
+        content: richText(
+          "In unserem Büro in Beispielstadt arbeiten Beratung, Gestaltung und Technik an einem Tisch. Komm vorbei, der Kaffee ist gut.",
+        ),
+        links: [{ link: pageLink(id["ueber-uns"], "Mehr über uns", "outline") }],
       },
       {
         blockType: "section",
@@ -280,6 +309,7 @@ async function createDemo(payload: Payload, req: Awaited<ReturnType<typeof creat
       {
         blockType: "hero",
         variant: "split",
+        image: image["facade-white.webp"],
         eyebrow: "Über uns",
         title: "Ein Team, das zuhört",
         text: "Die Musterfirma GmbH ist ein fiktives Unternehmen. Diese Seite zeigt, wie eine Seite „Über uns“ mit den Modulen aussehen kann.",
@@ -309,6 +339,12 @@ async function createDemo(payload: Payload, req: Awaited<ReturnType<typeof creat
           { value: "2020", label: "Eigener Bereich für Betrieb und Wartung" },
           { value: "2025", label: "100. abgeschlossenes Projekt" },
         ],
+      },
+      {
+        blockType: "gallery",
+        eyebrow: "Einblicke",
+        title: "So arbeiten wir",
+        images: [image["facade-slats.webp"], image["meeting-room.webp"], image["desk-lamp.webp"], image["workspace.webp"]],
       },
       { blockType: "team", title: "Ansprechpersonen", people: [anna, jonas, lea, mehmet], showContact: true },
     ],
@@ -371,7 +407,7 @@ async function createDemo(payload: Payload, req: Awaited<ReturnType<typeof creat
     ],
   };
   for (const [slug, layout] of Object.entries(layouts)) {
-    await payload.update({ collection: "pages", id: id[slug], data: { layout } as never, ...opts });
+    await payload.update({ collection: "pages", id: id[slug], data: { layout, _status: "published" } as never, ...opts });
   }
 
   // Beispiel für eine Weiterleitung: eine alte Adresse zeigt auf „Über uns“.

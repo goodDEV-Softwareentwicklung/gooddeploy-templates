@@ -1,6 +1,6 @@
 // Seiten der Website, aufgebaut aus Modulen (blocks/). Die Seite mit der
 // Adresse „home“ ist die Startseite (/), alle anderen erscheinen unter /<adresse>.
-import type { CollectionConfig } from "payload";
+import type { Access, CollectionConfig } from "payload";
 import { pageLayoutBlocks } from "../blocks/index.ts";
 import { seoFields } from "../fields/seo.ts";
 import { homeSlug } from "../lib/paths.ts";
@@ -15,16 +15,29 @@ export function validSlug(value: unknown): true | string {
 
 const loggedIn = ({ req }: { req: { user?: unknown } }) => Boolean(req.user);
 
+/** Ohne Anmeldung nur veröffentlichte Seiten (Website und API); angemeldet auch Entwürfe. */
+export const readPublishedOrLoggedIn: Access = ({ req }) => (req.user ? true : { _status: { equals: "published" } });
+
+/** Abstand des automatischen Speicherns beim Tippen (Entwurf, Live-Vorschau) in Millisekunden */
+export const autosaveInterval = 800;
+
 export const Pages: CollectionConfig = {
   slug: "pages",
   labels: { singular: "Seite", plural: "Seiten" },
   admin: {
     useAsTitle: "title",
     group: "Inhalte",
-    defaultColumns: ["title", "slug", "updatedAt"],
+    defaultColumns: ["title", "slug", "_status", "updatedAt"],
     description: `Die Startseite hat die Adresse „${homeSlug}“. Menü und Fuß stehen unter „Website“.`,
   },
-  access: { read: () => true, create: loggedIn, update: loggedIn, delete: loggedIn },
+  access: { read: readPublishedOrLoggedIn, create: loggedIn, update: loggedIn, delete: loggedIn },
+  // Entwürfe: Änderungen speichert Payload beim Tippen als Entwurf (die
+  // Live-Vorschau zeigt sie sofort), live gehen sie erst mit „Veröffentlichen“.
+  // „Entwurf speichern“ bleibt als Knopf sichtbar. Ältere Stände unter „Versionen“.
+  versions: {
+    drafts: { autosave: { interval: autosaveInterval, showSaveDraftButton: true } },
+    maxPerDoc: 50,
+  },
   defaultSort: "title",
   fields: [
     { name: "title", label: "Titel", type: "text", required: true },

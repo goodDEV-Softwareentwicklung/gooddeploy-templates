@@ -1,0 +1,54 @@
+/* Anleitung auf der Seite der MCP-Schlüssel (components/admin/McpGuide.tsx) */
+.box {
+  margin: 0 0 var(--base, 20px);
+  padding: 16px 20px;
+  border: 1px solid var(--theme-elevation-150);
+  border-left: 4px solid var(--theme-success-500, var(--theme-elevation-400));
+  border-radius: var(--style-radius-m, 4px);
+  background: var(--theme-elevation-50);
+  max-width: 64rem;
+}
+
+.box h3 {
+  margin: 0 0 8px;
+}
+
+.box details {
+  margin: 8px 0;
+}
+
+.box summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.box p {
+  margin: 4px 0;
+}
+
+.fresh {
+  font-weight: 600;
+}
+
+.snippet {
+  position: relative;
+  margin: 4px 0;
+}
+
+.snippet pre {
+  margin: 0;
+  padding: 10px 44px 10px 12px;
+  overflow-x: auto;
+  border-radius: var(--style-radius-s, 3px);
+  background: var(--theme-elevation-100);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.copy {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}

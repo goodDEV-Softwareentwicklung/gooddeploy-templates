@@ -26,6 +26,11 @@ import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c08
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaImageComponent as MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
+import { McpGuide as McpGuide_a54e9b935e5f67a1ef775047172238d3 } from '../../../components/admin/McpGuide.tsx'
+import { McpGuideList as McpGuideList_a54e9b935e5f67a1ef775047172238d3 } from '../../../components/admin/McpGuide.tsx'
+import { ColorField as ColorField_d2310d9ddb89d54c196a96781adbe081 } from '../../../components/admin/ColorField.tsx'
+import { AdminIcon as AdminIcon_674c8cb3d8926105b2cd4b56532e6ae2 } from '../../../components/admin/AdminGraphics.tsx'
+import { AdminLogo as AdminLogo_674c8cb3d8926105b2cd4b56532e6ae2 } from '../../../components/admin/AdminGraphics.tsx'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 
@@ -59,6 +64,11 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaImageComponent": MetaImageComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
+  "/components/admin/McpGuide.tsx#McpGuide": McpGuide_a54e9b935e5f67a1ef775047172238d3,
+  "/components/admin/McpGuide.tsx#McpGuideList": McpGuideList_a54e9b935e5f67a1ef775047172238d3,
+  "/components/admin/ColorField.tsx#ColorField": ColorField_d2310d9ddb89d54c196a96781adbe081,
+  "/components/admin/AdminGraphics.tsx#AdminIcon": AdminIcon_674c8cb3d8926105b2cd4b56532e6ae2,
+  "/components/admin/AdminGraphics.tsx#AdminLogo": AdminLogo_674c8cb3d8926105b2cd4b56532e6ae2,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24
 }

@@ -4,9 +4,13 @@ import { RenderBlocks } from "../../blocks/RenderBlocks.tsx";
 import { findPage, getSiteSettings } from "../../lib/content.ts";
 import { contentMetadata } from "../../lib/metadata.ts";
 import { homeSlug, requestOrigin } from "../../lib/paths.ts";
+import { wantsPreview } from "../../lib/preview.ts";
+import { LivePreviewRefresh } from "./live-preview.tsx";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const page = await findPage(homeSlug);
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const page = await findPage(homeSlug, wantsPreview(await searchParams));
   if (!page) return {};
   const settings = await getSiteSettings();
   const meta = contentMetadata({
@@ -21,8 +25,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return { ...meta, title: { absolute: title } };
 }
 
-export default async function Home() {
-  const page = await findPage(homeSlug);
+export default async function Home({ searchParams }: Props) {
+  const preview = wantsPreview(await searchParams);
+  const page = await findPage(homeSlug, preview);
   if (!page) {
     return (
       <section className="container empty-state">
@@ -33,5 +38,10 @@ export default async function Home() {
       </section>
     );
   }
-  return <RenderBlocks blocks={page.layout} />;
+  return (
+    <>
+      {preview && <LivePreviewRefresh />}
+      <RenderBlocks blocks={page.layout} />
+    </>
+  );
 }

@@ -65,6 +65,11 @@ export function resolveTheme(selection: ThemeSelection | null | undefined = {}):
   };
 }
 
+/** Farben aus Theme und Farbvariante ohne eigene Farben (Vorgaben im Farbwähler) */
+export function paletteColors(theme: string | null | undefined, palette: string | null | undefined): ColorTokens {
+  return resolveTheme({ theme, palette }).colors;
+}
+
 /** Schrift-Kennung → CSS-Variable, die die Laufzeit des Themes setzt */
 const fontVariable = (name: string) => `var(--font-${name.replace(/[^a-z0-9-]/g, "")})`;
 

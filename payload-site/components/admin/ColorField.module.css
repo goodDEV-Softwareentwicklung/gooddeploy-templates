@@ -1,0 +1,70 @@
+/* Farbfeld im Admin: Farbauswahl, Hex-Feld und Zurücksetzen in einer Zeile */
+.field {
+  min-width: 0;
+}
+
+.field :global(.field-type__wrap) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.field :global(.field-type__wrap) > input[type='text'],
+.field :global(.field-type__wrap) > input:not([type]) {
+  flex: 1 1 8rem;
+  min-width: 0;
+}
+
+.swatch {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 2px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: var(--style-radius-s, 3px);
+  background: var(--theme-input-bg, var(--theme-elevation-0));
+  cursor: pointer;
+}
+
+.swatch:disabled {
+  cursor: not-allowed;
+}
+
+.reset {
+  flex: none;
+  padding: 0 12px;
+  height: 40px;
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: var(--style-radius-s, 3px);
+  background: var(--theme-elevation-50);
+  color: var(--theme-text);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.reset:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.hint {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.pass {
+  color: var(--theme-success-750, #146c2e);
+}
+
+.fail {
+  color: var(--theme-error-750, #b42318);
+  font-weight: 600;
+}
+
+.source {
+  color: var(--theme-elevation-500);
+  font-weight: 400;
+}

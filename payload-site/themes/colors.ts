@@ -79,3 +79,14 @@ export const contrastPartner: Record<OverridableColor, keyof ColorTokens> = {
 };
 
 export const overridableColors = Object.keys(contrastPartner) as OverridableColor[];
+
+/** Kontrast für Menschen, z. B. „4,6:1“ */
+export function formatContrast(ratio: number): string {
+  return `${(Math.floor(ratio * 10) / 10).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}:1`;
+}
+
+/** `#rgb` → `#rrggbb` (für `<input type="color">`); ungültig → `#000000` */
+export function toSixDigits(hex: string): string {
+  const rgb = hexToRgb(hex);
+  return rgb ? `#${rgb.map((c) => c.toString(16).padStart(2, "0")).join("")}`.toLowerCase() : "#000000";
+}

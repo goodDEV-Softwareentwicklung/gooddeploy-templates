@@ -11,6 +11,7 @@
 import pg from "pg";
 import { getPayload, type Payload } from "payload";
 import { missingS3Variables, payloadSecret, s3Settings, unpooledDatabaseUrl } from "./env.ts";
+import { backfillPageVersions } from "./page-versions.ts";
 import { seedDemo, shouldSeed } from "./seed.ts";
 import { setupCode } from "./setup-code.ts";
 
@@ -52,6 +53,7 @@ export async function migrateOnStart(): Promise<void> {
       const payload = await getPayload({ config });
       const after = await count(client);
       console.log(`migrate: ${after - before} neue Migration(en) eingespielt, ${after} insgesamt (${Date.now() - started} ms)`);
+      await backfillOnce(payload);
       await seedOnce(payload);
       await logSetupCode(payload);
     } finally {
@@ -62,10 +64,22 @@ export async function migrateOnStart(): Promise<void> {
   }
 }
 
+// backfillOnce legt für Seiten aus der Zeit vor den Entwürfen eine
+// veröffentlichte Version an (lib/page-versions.ts). Scheitert das, startet die
+// Website trotzdem (öffentlich unverändert); der nächste Start versucht es erneut.
+export async function backfillOnce(payload: Payload): Promise<void> {
+  try {
+    const n = await backfillPageVersions(payload);
+    if (n > 0) console.log(`migrate: ${n} Seite(n) als veröffentlichte Version übernommen (Entwürfe und Vorschau)`);
+  } catch (err) {
+    console.error(`migrate: Versionen für bestehende Seiten fehlgeschlagen: ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
 // seedOnce legt beim ersten Start die Beispielinhalte an (lib/seed.ts), nur
 // solange es weder ein Konto noch eine Seite gibt. Scheitert das, startet die
 // Website trotzdem, nur ohne Beispiele.
-async function seedOnce(payload: Payload): Promise<void> {
+export async function seedOnce(payload: Payload): Promise<void> {
   try {
     if (!(await shouldSeed(payload))) return;
     const pages = await seedDemo(payload);

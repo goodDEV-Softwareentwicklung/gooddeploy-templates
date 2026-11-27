@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getSiteSettings } from "../../lib/content.ts";
+import { faviconHref, faviconSource } from "../../lib/favicon.ts";
 import { themeFonts } from "../../themes/runtime.ts";
 import { resolveTheme, themeCss } from "../../themes/resolve.ts";
 import { fallbackName, SiteFooter, SiteHeader } from "./chrome.tsx";
@@ -12,7 +13,10 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const name = settings.siteName || fallbackName;
+  // Favicon aus Logo, Icon und Theme; die Adresse ändert sich mit ihnen (lib/favicon.ts).
+  const icon = faviconSource(settings);
   return {
+    icons: { icon: faviconHref(icon), apple: faviconHref(icon, "apple") },
     title: { default: name, template: `%s · ${settings.shortName || name}` },
     description: settings.description ?? undefined,
   };

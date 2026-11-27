@@ -19,8 +19,11 @@ import { ReusableBlocks } from "./collections/ReusableBlocks.ts";
 import { Users } from "./collections/Users.ts";
 import { seoPluginOptions } from "./fields/seo.ts";
 import { SiteSettings } from "./globals/SiteSettings.ts";
-import { databaseUrl, payloadSecret, s3Settings } from "./lib/env.ts";
+import { databaseUrl, mcpEnabled, payloadSecret, s3Settings } from "./lib/env.ts";
+import { siteIconPath } from "./lib/favicon.ts";
+import { livePreviewUrl, previewBreakpoints } from "./lib/preview.ts";
 import { migrations } from "./migrations/index.ts";
+import { siteMcp } from "./plugins/siteMcp/index.ts";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const s3 = s3Settings();
@@ -29,7 +32,15 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     importMap: { baseDir: dirname },
-    meta: { titleSuffix: " · Website" },
+    // Favicon der Website auch im Admin-Panel (statt des Payload-Logos, E228).
+    meta: { titleSuffix: " · Website", icons: [{ rel: "icon", type: "image/png", url: siteIconPath }] },
+    // Logo bzw. Icon der Website im Kopf und auf der Anmeldeseite statt des Payload-Logos.
+    components: {
+      graphics: { Logo: "/components/admin/AdminGraphics.tsx#AdminLogo", Icon: "/components/admin/AdminGraphics.tsx#AdminIcon" },
+    },
+    // Live-Vorschau neben dem Formular, beim ersten Öffnen einer Seite offen
+    // (danach merkt sich Payload je Konto, ob sie an oder aus ist).
+    livePreview: { collections: ["pages"], url: livePreviewUrl, breakpoints: previewBreakpoints, openByDefault: true },
   },
   i18n: { supportedLanguages: { de }, fallbackLanguage: "de" },
   collections: [Pages, ReusableBlocks, People, mediaCollection(Boolean(s3)), Users],
@@ -63,6 +74,8 @@ export default buildConfig({
     seoPlugin(seoPluginOptions),
     // Sammlung `redirects`; angewendet im Frontend, wenn ein Pfad keine Seite hat
     redirectsPlugin(redirectsPluginOptions),
+    // Website per Claude pflegen: /api/mcp mit MCP-Schlüsseln (plugins/siteMcp); SITE_MCP=false schaltet es ab.
+    siteMcp({ disabled: !mcpEnabled() }),
     s3Storage({
       enabled: Boolean(s3),
       // Gleiche Tabellen mit und ohne S3: Die Migrationen hängen nicht davon ab.

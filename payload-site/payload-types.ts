@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    'payload-mcp-api-keys': PayloadMcpApiKeyAuthOperations;
   };
   blocks: {};
   collections: {
@@ -73,6 +74,8 @@ export interface Config {
     media: Media;
     users: User;
     redirects: Redirect;
+    'payload-mcp-api-keys': PayloadMcpApiKey;
+    'mcp-upload-tokens': McpUploadToken;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +89,8 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    'payload-mcp-api-keys': PayloadMcpApiKeysSelect<false> | PayloadMcpApiKeysSelect<true>;
+    'mcp-upload-tokens': McpUploadTokensSelect<false> | McpUploadTokensSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -105,13 +110,31 @@ export interface Config {
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: User | PayloadMcpApiKey;
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
 export interface UserAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface PayloadMcpApiKeyAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -169,6 +192,7 @@ export interface Page {
   };
   updatedAt: string;
   createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -273,7 +297,7 @@ export interface MediaTextBlock {
           label: string;
           reference?: (number | null) | Page;
           /**
-           * z. B. https://… oder /kontakt#formular
+           * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
            */
           url?: string | null;
           /**
@@ -301,6 +325,7 @@ export interface Media {
    * Was ist zu sehen? Für Screenreader und Suchmaschinen.
    */
   alt: string;
+  sample?: boolean | null;
   prefix?: string | null;
   _objectKey?: string | null;
   updatedAt: string;
@@ -378,7 +403,7 @@ export interface CardsBlock {
           label?: string | null;
           reference?: (number | null) | Page;
           /**
-           * z. B. https://… oder /kontakt#formular
+           * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
            */
           url?: string | null;
           /**
@@ -395,7 +420,7 @@ export interface CardsBlock {
     label?: string | null;
     reference?: (number | null) | Page;
     /**
-     * z. B. https://… oder /kontakt#formular
+     * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
      */
     url?: string | null;
     /**
@@ -490,7 +515,7 @@ export interface CallToActionBlock {
           label: string;
           reference?: (number | null) | Page;
           /**
-           * z. B. https://… oder /kontakt#formular
+           * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
            */
           url?: string | null;
           /**
@@ -590,7 +615,7 @@ export interface HeroBlock {
           label: string;
           reference?: (number | null) | Page;
           /**
-           * z. B. https://… oder /kontakt#formular
+           * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
            */
           url?: string | null;
           /**
@@ -706,6 +731,96 @@ export interface Redirect {
   createdAt: string;
 }
 /**
+ * Schlüssel für Claude und andere KI-Assistenten (MCP). Ein Schlüssel hat höchstens die Rechte deines Kontos; Veröffentlichen und Offline-Nehmen gibst du je Schlüssel frei.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-mcp-api-keys".
+ */
+export interface PayloadMcpApiKey {
+  id: number;
+  /**
+   * Das Konto, dessen Rechte der Schlüssel hat.
+   */
+  user: number | User;
+  /**
+   * z. B. Claude Desktop auf meinem Laptop
+   */
+  label?: string | null;
+  /**
+   * Wofür der Schlüssel gedacht ist.
+   */
+  description?: string | null;
+  media?: {
+    find?: boolean | null;
+  };
+  reusableBlocks?: {
+    find?: boolean | null;
+  };
+  siteSettings?: {
+    find?: boolean | null;
+    update?: boolean | null;
+  };
+  'payload-mcp-tool'?: {
+    /**
+     * Module und Felder für Seiten anzeigen
+     */
+    describeBlocks?: boolean | null;
+    /**
+     * Seiten auflisten
+     */
+    listPages?: boolean | null;
+    /**
+     * Seite lesen
+     */
+    readPage?: boolean | null;
+    /**
+     * Seite als Entwurf anlegen
+     */
+    createPage?: boolean | null;
+    /**
+     * Seite als Entwurf ändern
+     */
+    updatePage?: boolean | null;
+    /**
+     * Seite veröffentlichen (nur mit Freigabe)
+     */
+    publishPage?: boolean | null;
+    /**
+     * Seite offline nehmen (nur mit Freigabe)
+     */
+    unpublishPage?: boolean | null;
+    /**
+     * Bild von einer https-Adresse übernehmen (nur mit S3)
+     */
+    importImage?: boolean | null;
+    /**
+     * Einmaligen Upload-Link für eine Bilddatei erzeugen (nur mit S3)
+     */
+    requestImageUpload?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  hasAPIKey?: boolean | null;
+  collection: 'payload-mcp-api-keys';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mcp-upload-tokens".
+ */
+export interface McpUploadToken {
+  id: number;
+  tokenHash: string;
+  user?: (number | null) | User;
+  mcpKey?: (number | null) | PayloadMcpApiKey;
+  alt: string;
+  expiresAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -752,12 +867,25 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'redirects';
         value: number | Redirect;
+      } | null)
+    | ({
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
+      } | null)
+    | ({
+        relationTo: 'mcp-upload-tokens';
+        value: number | McpUploadToken;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -767,10 +895,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'payload-mcp-api-keys';
+        value: number | PayloadMcpApiKey;
+      };
   key?: string | null;
   value?:
     | {
@@ -828,6 +961,7 @@ export interface PagesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1158,6 +1292,7 @@ export interface PeopleSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  sample?: T;
   prefix?: T;
   _objectKey?: T;
   updatedAt?: T;
@@ -1211,6 +1346,63 @@ export interface RedirectsSelect<T extends boolean = true> {
         url?: T;
       };
   type?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-mcp-api-keys_select".
+ */
+export interface PayloadMcpApiKeysSelect<T extends boolean = true> {
+  user?: T;
+  label?: T;
+  description?: T;
+  media?:
+    | T
+    | {
+        find?: T;
+      };
+  reusableBlocks?:
+    | T
+    | {
+        find?: T;
+      };
+  siteSettings?:
+    | T
+    | {
+        find?: T;
+        update?: T;
+      };
+  'payload-mcp-tool'?:
+    | T
+    | {
+        describeBlocks?: T;
+        listPages?: T;
+        readPage?: T;
+        createPage?: T;
+        updatePage?: T;
+        publishPage?: T;
+        unpublishPage?: T;
+        importImage?: T;
+        requestImageUpload?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
+  hasAPIKey?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mcp-upload-tokens_select".
+ */
+export interface McpUploadTokensSelect<T extends boolean = true> {
+  tokenHash?: T;
+  user?: T;
+  mcpKey?: T;
+  alt?: T;
+  expiresAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1317,7 +1509,7 @@ export interface SiteSetting {
           label: string;
           reference?: (number | null) | Page;
           /**
-           * z. B. https://… oder /kontakt#formular
+           * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
            */
           url?: string | null;
           /**
@@ -1333,7 +1525,7 @@ export interface SiteSetting {
                 label: string;
                 reference?: (number | null) | Page;
                 /**
-                 * z. B. https://… oder /kontakt#formular
+                 * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
                  */
                 url?: string | null;
                 /**
@@ -1358,7 +1550,7 @@ export interface SiteSetting {
           label: string;
           reference?: (number | null) | Page;
           /**
-           * z. B. https://… oder /kontakt#formular
+           * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
            */
           url?: string | null;
           /**
@@ -1379,7 +1571,7 @@ export interface SiteSetting {
     label?: string | null;
     reference?: (number | null) | Page;
     /**
-     * z. B. https://… oder /kontakt#formular
+     * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
      */
     url?: string | null;
     /**
@@ -1393,7 +1585,7 @@ export interface SiteSetting {
     label?: string | null;
     reference?: (number | null) | Page;
     /**
-     * z. B. https://… oder /kontakt#formular
+     * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
      */
     url?: string | null;
     /**
@@ -1409,7 +1601,7 @@ export interface SiteSetting {
           label: string;
           reference?: (number | null) | Page;
           /**
-           * z. B. https://… oder /kontakt#formular
+           * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
            */
           url?: string | null;
           /**
@@ -1426,7 +1618,7 @@ export interface SiteSetting {
    */
   palette?: ('sun' | 'plum' | 'navy' | 'moss' | 'bordeaux' | 'green' | 'forest' | 'blue') | null;
   /**
-   * Leer = Wert aus Theme und Farbvariante. Fläche und Text darauf brauchen genug Kontrast (WCAG AA: mindestens 4,5:1). Gilt für den hellen Modus; im dunklen Modus bleiben die Grundflächen dunkel.
+   * Leer = Wert aus Theme und Farbvariante. Fläche und Text darauf brauchen genug Kontrast (WCAG AA: mindestens 4,5:1); jedes Feld zeigt ihn an. Gilt für den hellen Modus; im dunklen Modus bleiben die Grundflächen dunkel.
    */
   colors?: {
     primary?: string | null;
@@ -1574,7 +1766,7 @@ export interface RichTextButtonBlock {
     label: string;
     reference?: (number | null) | Page;
     /**
-     * z. B. https://… oder /kontakt#formular
+     * z. B. https://…, mailto:…, tel:… oder /kontakt#formular
      */
     url?: string | null;
     /**

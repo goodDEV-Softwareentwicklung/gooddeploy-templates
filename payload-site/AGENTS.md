@@ -22,13 +22,20 @@ rate keine Befehle. Das Handbuch steht unter https://docs.gooddeploy.eu/.
 | Pfad | Zweck |
 |---|---|
 | `payload.config.ts` | Payload: Sammlungen, Global, Postgres, S3-Adapter für Uploads, Migrationen beim Start |
-| `collections/Pages.ts` | Seiten (Titel, Adresse, Beschreibung, Module); Adresse `home` ist die Startseite |
+| `collections/Pages.ts` | Seiten (Titel, Adresse, Beschreibung, Module) mit Entwürfen; Adresse `home` ist die Startseite |
+| `lib/preview.ts`, `app/(site)/live-preview.tsx` | Live-Vorschau im Admin-Panel (`?preview=1`, Entwurf nur mit Anmeldung) |
 | `collections/ReusableBlocks.ts`, `People.ts` | Modul-Bibliothek; Personen für Team und Kontakt |
 | `collections/Redirects.ts`, `lib/redirects.ts` | Weiterleitungen (Plugin `@payloadcms/plugin-redirects`), angewendet in `app/(site)/not-found-or-redirect.ts` |
 | `fields/seo.ts`, `lib/metadata.ts` | SEO-Felder der Seiten (Plugin `@payloadcms/plugin-seo`) und die Meta-Tags daraus |
 | `collections/Media.ts` | Bilder; nur mit S3-Speicher, sonst ist das Hochladen aus |
+| `lib/sample-images.ts`, `public/samples/` | Beispielbilder der Musterfirma (ohne S3, Unsplash License, nicht MIT; `CREDITS.md`) |
 | `collections/Users.ts` | Konten für das Admin-Panel (erstes Konto nur mit Einrichtungscode) |
 | `globals/SiteSettings.ts` | Global „Website“: Name, Logo, Menü, Fuß, Theme und Farben |
+| `components/admin/` | eigene Felder im Admin-Panel (Farbwähler); nach Änderungen `npm run generate:importmap` |
+| `lib/favicon.ts`, `app/site-icon/` | Favicon aus Logo, sonst Icon in der Theme-Farbe (`/site-icon`) |
+| `components/admin/AdminGraphics.tsx`, `lib/admin-graphics.ts` | Logo bzw. Icon der Website im Kopf und auf der Anmeldeseite des Admin-Panels |
+| `plugins/siteMcp/` | Website per Claude pflegen: `/api/mcp` (`@payloadcms/plugin-mcp`), MCP-Schlüssel, Werkzeuge (`tools.ts`), Upload-Link für Bilder |
+| `components/admin/McpGuide.tsx`, `lib/mcp-guide.ts` | Anleitung auf der Seite der MCP-Schlüssel (Claude Desktop, Claude Code, andere Agents) |
 | `blocks/` | Module: je Ordner `config.ts` (Felder) und `Component.tsx`; `registry.ts` (wo erlaubt), `components.ts` (blockType → Komponente), `mappers.ts` (Payload-Daten → ui) |
 | `ui/` | Darstellung ohne Payload: React-Komponenten mit CSS-Modulen |
 | `themes/` | Themes (Farben, Schriften, Tokens), `resolve.ts` schreibt sie als CSS-Variablen, hell und dunkel |
@@ -38,7 +45,7 @@ rate keine Befehle. Das Handbuch steht unter https://docs.gooddeploy.eu/.
 | `migrations/` | Migrationen (erzeugt mit `npm run migrate:create`, committen); `index.ts` listet sie |
 | `lib/env.ts` | alle Umgebungsvariablen an einer Stelle (Geheimnis, Datenbank, S3) |
 | `lib/migrate-on-start.ts`, `instrumentation*.ts` | spielt beim Start die Migrationen ein, genau einmal (Sperre), danach die Beispielinhalte |
-| `lib/content.ts` | Seiten und Global aus dem CMS lesen (Local API) |
+| `lib/content.ts` | Seiten und Global aus dem CMS lesen (Local API; veröffentlicht, Entwurf nur in der Vorschau) |
 | `app/(site)/` | die Website: Layout mit Kopf und Fuß (`chrome.tsx`), Startseite, `[slug]` für alle anderen Seiten, `globals.css` |
 | `app/(payload)/` | Admin-Panel und REST-API von Payload (erzeugt, nicht von Hand ändern) |
 | `app/api/health/` | Health-Check mit Datenbank-Prüfung (`gooddeploy.json`) |
@@ -61,7 +68,12 @@ rate keine Befehle. Das Handbuch steht unter https://docs.gooddeploy.eu/.
 - Seiten mit Inhalten aus dem CMS sind dynamisch (`export const dynamic = "force-dynamic"` im
   Layout von `app/(site)`): Beim Build gibt es keine Datenbank.
 - Inhalte serverseitig über die Local API lesen (`getPayload({ config })`, siehe `lib/content.ts`),
-  nicht per `fetch` an die eigene `/api`.
+  nicht per `fetch` an die eigene `/api`. Die Local API übergeht Zugriffsrechte, wenn man sie
+  nicht abschaltet: auf der Website `overrideAccess: false` und nur `_status: "published"`;
+  Entwürfe (`draft: true`) nur in der Vorschau mit angemeldetem Konto (`findPage`).
+- **Entwürfe:** Seiten speichern beim Tippen einen Entwurf; live erst mit „Veröffentlichen“. Neue
+  Sammlungen mit öffentlichen Inhalten bekommen dieselbe Regel (`versions.drafts`, Lesen ohne
+  Konto nur `published`). Entwürfe nie ohne Anmeldung zeigen, auch nicht über `?preview=1`.
 - **Module:** keine Module mit freiem HTML, Skripten oder Einbettungen fremder Seiten (XSS: Website
   und Admin-Panel teilen sich die Adresse). Ein Formular mit Versand braucht Spamschutz und eine
   Rechtsgrundlage; frag vorher nach. Payload-Daten nur in `blocks/` kennen, `ui/` bleibt neutral.
@@ -69,7 +81,17 @@ rate keine Befehle. Das Handbuch steht unter https://docs.gooddeploy.eu/.
   CSS: sonst passen Themes und der dunkle Modus nicht. Neue Paletten erfüllen WCAG AA
   (`tests/themes.test.ts`).
 - Beispielinhalte (`lib/seed.ts`) nur ändern, wenn die Nutzerin das will; sie laufen nur ohne Konto
-  und ohne Seite. Keine echten Firmen, Personen oder Kontaktdaten als Beispiel.
+  und ohne Seite. Keine echten Firmen, Personen oder Kontaktdaten als Beispiel. Neue
+  Beispielbilder nur mit freier Lizenz, ohne erkennbare Personen, Logos und Marken, mit Eintrag
+  in `public/samples/CREDITS.md`.
+- **MCP (`plugins/siteMcp/`):** Werkzeuge arbeiten immer mit `overrideAccess: false` und dem Konto
+  des MCP-Schlüssels; Seiten nur als Entwurf (`draft: true`). Veröffentlichen, Offline-Nehmen und das
+  Ändern des Globals „Website“ bleiben je Schlüssel standardmäßig aus (`optInTools`, Freigaben in
+  `apiKeys.ts`). Gib über MCP keine Konten, Schlüssel oder Personen frei und schreibe nie Inhalte aus
+  der Datenbank in die Anweisungen an den Client (`mcpInstructions`, eingeschleuste Anweisungen).
+  Schlüssel werden nur gehasht gespeichert (`dropPlainKey`), nie im Klartext ausgeben oder loggen.
+  Ein neues Werkzeug braucht einen Eintrag in `toolCatalog` und eine Migration (Spalte für die
+  Freigabe). Den Server nicht beim Start importieren (Lazy-Load in `index.ts`).
 - Zugriffsrechte stehen je Sammlung unter `access`. Lesen ist öffentlich, Schreiben nur mit
   Konto; neue Sammlungen bekommen ausdrücklich eigene Regeln.
 - Schriften nicht mit `next/font/google` laden (Abruf aus dem Netz beim Build kann scheitern);
@@ -133,6 +155,7 @@ gooddeploy env ls               # gesetzte Variablen (Werte maskiert)
 | `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | nein | schalten das Hochladen von Bildern ein |
 | `S3_ENDPOINT`, `S3_REGION` | nein | Adresse und Region des S3-Anbieters (bei AWS nur die Region) |
 | `S3_FORCE_PATH_STYLE` | nein | `false`, wenn der Anbieter keine Pfad-Adressen kann (Standard mit `S3_ENDPOINT`: `true`) |
+| `SITE_MCP` | nein | `false` schaltet `/api/mcp` (Website per Claude pflegen, MCP-Schlüssel im Admin-Panel) ab |
 
 Ohne S3-Variablen läuft die Website vollständig, nur ohne Hochladen; das Admin-Panel sagt das.
 Einen eigenen Speicher für Dateien gibt es bei gooddeploy (noch) nicht; nimm den S3-Zugang eines
@@ -151,6 +174,7 @@ Anbieters.
 | Build bricht mit fehlender Datenbank ab | Seite fragt beim Build die Datenbank ab | Seite dynamisch machen (siehe Regeln) |
 | Feld fehlt in der Datenbank (`column … does not exist`) | Migration vergessen | `npm run migrate:create <name>`, committen, deployen |
 | `/api/health` meldet 503 | Datenbank nicht erreichbar | `gooddeploy logs <id>`, `gooddeploy db info` |
+| `/api/mcp` antwortet 401 | Header `Authorization: Bearer <MCP-Schlüssel>` fehlt, Schlüssel gelöscht, oder Preview statt Live-Adresse | Nutzerin legt unter „MCP-Schlüssel“ einen neuen an; Live-Adresse nehmen |
 
 ## Handbuch
 
